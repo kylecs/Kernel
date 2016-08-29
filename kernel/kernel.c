@@ -18,8 +18,6 @@ void print_multiboot_info(multiboot_header_t* mboot){
 	printf("Upper memory is %sKB\n", mboot->mem_upper);
 }
 
-extern int testfunc(uint32_t, uint32_t);
-
 void kmain(uintptr_t stack_top,uintptr_t stack_bottom,multiboot_header_t* mboot, uint32_t magic){
 	terminal_initialize();
 	printf("Magic number: %s\n", magic);
@@ -28,6 +26,4 @@ void kmain(uintptr_t stack_top,uintptr_t stack_bottom,multiboot_header_t* mboot,
 	printf("Stack top: %sB\n", stack_top);
 	printf("Size of uint64_t is %s\n", sizeof(uint64_t));
 	printf("Print of -11 is %s\n", -11);
-	printf("Return from testfunc(7) is %s", testfunc(11, 22));
-	print("\n\n");
 }

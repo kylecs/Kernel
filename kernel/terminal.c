@@ -25,10 +25,11 @@ void terminal_write_char_at(uint16_t x, uint16_t y, vga_entry entry){
 }
 void terminal_set_cursor_position(uint8_t x, uint8_t y){
 	uint16_t pos = y*WIDTH + x;
-	outb(TERMINAL_COMMAND_PORT, 14);
-	outb(TERMINAL_DATA_PORT, (pos >> 8) & 0x00FF);
-	outb(TERMINAL_COMMAND_PORT, 15);
-	outb(TERMINAL_DATA_PORT, pos & 0x00FF);
+	outw(TERMINAL_COMMAND_PORT, 14);
+	outw(TERMINAL_DATA_PORT, (pos >> 8) & 0x00FF);
+	outw(TERMINAL_COMMAND_PORT, 15);
+	outw(TERMINAL_DATA_PORT, pos & 0x00FF);
+
 
 }
 void terminal_write_next_entry(vga_entry entry){
@@ -94,11 +95,9 @@ void printf(char* str, int32_t rpl){
 			char* str2 = int_to_string(rpl);
 
 			char* str3 = substring(str, i + 2, size);
-			//print(str3);
 			char* p1 = concat(str1, str2);
 			char* p2 = concat(p1, str3);
 			print(p2);
-			//print(concat(str1, concat(str2, str3)));
 
 			return;
 		}

@@ -27,15 +27,9 @@ a and w are both attributes, a means allocatable and w means writable
 .section .text
   .global _start
   .extern kmain
-  .global testfunc
-  .global inb
   .global outb
   .type _start, @function
   .type kmain, @function
-  .type testfunc, @function
-  .type inb, @function
-  .type outb, @function
-
   _start:
     cli
     lea edx, stack_top
@@ -47,17 +41,6 @@ a and w are both attributes, a means allocatable and w means writable
     push edx
   	call kmain
     hlt
-
-  testfunc:
-    push ebp
-    mov ebp, esp
-    mov eax, [ebp+8]
-    mov edx, [ebp+12]
-    add eax, edx
-    pop ebp
-    ret
-
-
 
 .section HANG
   jmp HANG
