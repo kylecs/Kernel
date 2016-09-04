@@ -48,6 +48,12 @@ char* int_to_string(int32_t input){
 		input *= -1;
 	}
 
+	if(input == 0) {
+		char* ret = kalloc(sizeof(char));
+		(*ret) = '0';
+		return ret;
+	}
+
 	uint16_t n = 1;
 	uint32_t temp = input;
 	while((temp /= 10) >=1){
@@ -87,7 +93,7 @@ char* int_to_string(int32_t input){
 
 char* substring(char* str, uint16_t start, uint16_t end){
 
-	char* ret = (char* )kalloc(end - start);
+	char* ret = (char* )kalloc(end - start + 1);
 
 
 	for(uint16_t i = 0; i < (end - start); i++){

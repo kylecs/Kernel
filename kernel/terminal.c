@@ -25,10 +25,10 @@ void terminal_write_char_at(uint16_t x, uint16_t y, vga_entry entry){
 }
 void terminal_set_cursor_position(uint8_t x, uint8_t y){
 	uint16_t pos = y*WIDTH + x;
-	outw(TERMINAL_COMMAND_PORT, 14);
-	outw(TERMINAL_DATA_PORT, (pos >> 8) & 0x00FF);
-	outw(TERMINAL_COMMAND_PORT, 15);
-	outw(TERMINAL_DATA_PORT, pos & 0x00FF);
+	outb(TERMINAL_COMMAND_PORT, 14);
+	outb(TERMINAL_DATA_PORT, (pos >> 8) & 0x00FF);
+	outb(TERMINAL_COMMAND_PORT, 15);
+	outb(TERMINAL_DATA_PORT, pos & 0x00FF);
 
 
 }
@@ -84,10 +84,6 @@ void terminal_scroll(){
 	}
 }
 void printf(char* str, int32_t rpl){
-	if(rpl == NULL){
-		print(str);
-		return;
-	}
 	uint16_t size = strlen(str);
 	for(uint16_t i = 0; i < size - 1; i++){
 		if(str[i] == '%' && str[i + 1] == 's'){
@@ -98,7 +94,6 @@ void printf(char* str, int32_t rpl){
 			char* p1 = concat(str1, str2);
 			char* p2 = concat(p1, str3);
 			print(p2);
-
 			return;
 		}
 	}

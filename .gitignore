@@ -1,4 +1,5 @@
-/cross-compiler
-/iso
+/isodir
 /out
 latest.bin
+bochsout.log
+bootable.iso
