@@ -16,8 +16,12 @@ vga_entry terminal_make_vga_entry(char c){
 	ret.color = color;
 	ret.data = c | color << 8;
 	return ret;
-
 }
+
+void terminal_set_color(uint8_t foreground, uint8_t background) {
+	color = terminal_make_color(foreground, background);
+}
+
 void terminal_write_char_at(uint16_t x, uint16_t y, vga_entry entry){
 	//if(x == WIDTH ) return;
 	//if(y == HEIGHT) return;
@@ -31,6 +35,14 @@ void terminal_set_cursor_position(uint8_t x, uint8_t y){
 	outb(TERMINAL_DATA_PORT, pos & 0x00FF);
 
 
+}
+
+uint8_t terminal_getX() {
+	return x;
+}
+
+uint8_t terminal_getY() {
+	return y;
 }
 
 void terminal_backspace(){
@@ -63,6 +75,7 @@ void terminal_clear(){
 		terminal[n] = whitespace.data;
 	}
 	x = 0, y = 0;
+	terminal_set_cursor_position(x, y);
 }
 void terminal_initialize(){
 	x = 0;

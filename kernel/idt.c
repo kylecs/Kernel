@@ -8,7 +8,7 @@ idt_gate_t IDT[NUM_IDT_GATES];
 idt_descriptor_t idt_desc;
 
 void install_idt() {
-  print("Installing IDT ...");
+  print("Installing IDT ... ");
   size_t size = sizeof(idt_gate_t) * NUM_IDT_GATES;
   idt_descriptor_t idt_desc;
   idt_desc.base = IDT;

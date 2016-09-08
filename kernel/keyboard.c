@@ -2,6 +2,7 @@
 #include "include/io.h"
 #include "include/terminal.h"
 #include "include/interrupts.h"
+#include "include/shell.h"
 
 uint8_t shift = 0;
 uint8_t caps = 0;
@@ -15,13 +16,11 @@ void keyboard_interrupt_handler() {
 	status = inb(0x64);
 	if(status & 1){
 		keycode = inb(0x60);
-    //printf("Keycode: %s\n", keycode);
     handle_key(keycode);
 	}
 }
 
 void handle_key(int32_t keycode) {
-  //printf("Keycode: %s\n", keycode);
   switch(keycode) {
     case SHIFT:
       shift = 1;
@@ -36,22 +35,17 @@ void handle_key(int32_t keycode) {
         caps = 1;
       }
       break;
-    case BACKSPACE:
-      terminal_backspace();
-      break;
     default:
       if(keycode < 0) return;
+      char ch;
       if(shift || caps) {
-        char str[2];
-        str[1] = 0;
-        str[0] = keymap_upper[keycode];
-        print(&str);
+        ch = keymap_upper[keycode];
       }else {
-        char str[2];
-        str[1] = 0;
-        str[0] = keymap_lower[keycode];
-        print(&str);
+        ch = keymap_lower[keycode];
       }
+      //case handled, now pass to shell
+      shell_handle_key(keycode, ch);
+
   }
 }
 

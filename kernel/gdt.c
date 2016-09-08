@@ -4,7 +4,7 @@ gdt_entry_t GDT[3];
 gdt_descriptor_t gdt_desc;
 
 void install_gdt() {
-  print("Installing GDT ...");
+  print("Installing GDT ... ");
 
   gdt_desc.offset = GDT;
   gdt_desc.size = sizeof(GDT) - 1;

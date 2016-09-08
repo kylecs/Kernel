@@ -20,4 +20,5 @@ char digit_to_char(uint8_t input);
 char* int_to_string(int32_t input);
 char* substring(char* str, uint16_t start, uint16_t end);
 char* concat(char* str1, char* str2);
+uint8_t string_starts_with(char* full, char* start);
 #endif

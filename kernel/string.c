@@ -114,3 +114,15 @@ char* concat(char* str1, char* str2){
 	}
 	return ret;
 }
+
+uint8_t string_starts_with(char* full, char* start) {
+	if(strlen(full) < strlen(start)) {
+		return 0;
+	}
+	for(int i = 0; i < strlen(start); i++) {
+		if(full[i] != start[i]){
+			return 0;
+		}
+	}
+	return 1;
+}

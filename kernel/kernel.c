@@ -7,6 +7,7 @@
 #include "include/idt.h"
 #include "include/interrupts.h"
 #include "include/keyboard.h"
+#include "include/shell.h"
 
 struct multiboot_header{
 	uintptr_t flags;
@@ -32,5 +33,6 @@ void kmain(uintptr_t stack_top,uintptr_t stack_bottom,multiboot_header_t* mboot,
 	install_idt();
 	install_interrupt_interface();
 	install_keyboard();
+	shell_initialize();
 	while(1) {}
 }

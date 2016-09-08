@@ -30,4 +30,7 @@ void terminal_write_char_at(uint16_t x, uint16_t y, vga_entry entry);
 void terminal_set_cursor_position(uint8_t x, uint8_t y);
 void printf(char* str, int32_t rpl);
 void print(char* str);
+uint8_t terminal_getX();
+uint8_t terminal_getY();
+void terminal_set_color(uint8_t forground, uint8_t background);
 #endif
