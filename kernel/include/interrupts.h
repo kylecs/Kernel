@@ -9,7 +9,7 @@ typedef struct {
   void* handler;
 } interrupt_handler_t;
 
-interrupt_handler_t HANDLERS[256];
+static interrupt_handler_t HANDLERS[256];
 
 void install_interrupt_interface();
 void general_interrupt_handler(int offset);

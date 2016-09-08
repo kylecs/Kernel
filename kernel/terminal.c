@@ -32,6 +32,14 @@ void terminal_set_cursor_position(uint8_t x, uint8_t y){
 
 
 }
+
+void terminal_backspace(){
+	if(x > 0) x--;
+	terminal_write_char_at(x, y, whitespace);
+	terminal_set_cursor_position(x, y);
+}
+
+
 void terminal_write_next_entry(vga_entry entry){
 	if(x == WIDTH){
 		x = 0;
@@ -54,6 +62,7 @@ void terminal_clear(){
 	for(uint16_t n = 0; n < WIDTH * HEIGHT; n++){
 		terminal[n] = whitespace.data;
 	}
+	x = 0, y = 0;
 }
 void terminal_initialize(){
 	x = 0;
@@ -82,6 +91,8 @@ void terminal_scroll(){
 	for(uint16_t i = 80*24; i < 80*25; i++){
 		terminal[i] = whitespace.data;
 	}
+	y--;
+	x = 0;
 }
 void printf(char* str, int32_t rpl){
 	uint16_t size = strlen(str);

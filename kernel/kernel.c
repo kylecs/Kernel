@@ -6,6 +6,7 @@
 #include "include/gdt.h"
 #include "include/idt.h"
 #include "include/interrupts.h"
+#include "include/keyboard.h"
 
 struct multiboot_header{
 	uintptr_t flags;
@@ -19,57 +20,7 @@ void print_multiboot_info(multiboot_header_t* mboot){
 	printf("Flags is %s\n", mboot->flags);
 	printf("Lower memory is %sKB\n", mboot->mem_lower);
 	printf("Upper memory is %sKB\n", mboot->mem_upper);
-	bool x;
 }
-
-
-//TODO Make some sort of enum for this?
-unsigned char kbdus[128] =
-{
-    0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
-  '9', '0', '-', '=', '\b',	/* Backspace */
-  '\t',			/* Tab */
-  'q', 'w', 'e', 'r',	/* 19 */
-  't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n',	/* Enter key */
-    0,			/* 29   - Control */
-  'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',	/* 39 */
- '\'', '`',   0,		/* Left shift */
- '\\', 'z', 'x', 'c', 'v', 'b', 'n',			/* 49 */
-  'm', ',', '.', '/',   0,				/* Right shift */
-  '*',
-    0,	/* Alt */
-  ' ',	/* Space bar */
-    0,	/* Caps lock */
-    0,	/* 59 - F1 key ... > */
-    0,   0,   0,   0,   0,   0,   0,   0,
-    0,	/* < ... F10 */
-    0,	/* 69 - Num lock*/
-    0,	/* Scroll Lock */
-    0,	/* Home key */
-    0,	/* Up Arrow */
-    0,	/* Page Up */
-  '-',
-    0,	/* Left Arrow */
-    0,
-    0,	/* Right Arrow */
-  '+',
-    0,	/* 79 - End key*/
-    0,	/* Down Arrow */
-    0,	/* Page Down */
-    0,	/* Insert Key */
-    0,	/* Delete Key */
-    0,   0,   0,
-    0,	/* F11 Key */
-    0,	/* F12 Key */
-    0,	/* All other keys are undefined */
-};
-
-void nevercalled(){
-	print("This should never be called!");
-}
-
-void keyboard_handler();
-void divzeroexception();
 
 void kmain(uintptr_t stack_top,uintptr_t stack_bottom,multiboot_header_t* mboot, uint32_t magic){
 	terminal_initialize();
@@ -80,32 +31,6 @@ void kmain(uintptr_t stack_top,uintptr_t stack_bottom,multiboot_header_t* mboot,
 	install_gdt();
 	install_idt();
 	install_interrupt_interface();
-	install_interrupt_handler(33, keyboard_handler);
-	install_interrupt_handler(0, divzeroexception);
-	int x = 9 / 0;
-	printf("X is %s\n", x);
+	install_keyboard();
 	while(1) {}
-}
-
-void divzeroexception(){
-	print("You divided by 0, universe now broken.\n");
-}
-
-void keyboard_handler(){
-	uint8_t status;
-	char keycode;
-
-	//write interrupt end
-	outb(0x20, 0x20);
-
-	status = inb(0x64);
-	if(status & 1){
-		keycode = inb(0x60);
-		if(kbdus[keycode] > 0) {
-			char* str[2];
-			str[1] = 0;
-			str[0] = kbdus[keycode];
-			print(&str);
-		}
-	}
 }

@@ -21,6 +21,7 @@ void terminal_writeline(char* c);
 void terminal_clear();
 void terminal_scroll();
 void terminal_initialize();
+void terminal_backspace();
 void terminal_write_next_entry(vga_entry entry);
 void terminal_write_next_char(char c);
 vga_entry terminal_make_vga_entry(char c);
