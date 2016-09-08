@@ -1,6 +1,5 @@
 #include "include/idt.h"
 #include "include/io.h"
-#include "include/interrupts.h"
 
 extern void handle_interrupt(void);
 extern void gpf_handler(void);
@@ -16,8 +15,8 @@ void install_idt() {
   idt_desc.limit = sizeof(IDT) - 1;
 
   //setup 2 interrupt handlers
-  add_idt_entry(0x21, handle_interrupt, 0x08, 0x8e);
-  add_idt_entry(&IDT[0xD], gpf_handler, 0x08, 0x8e);
+  //add_idt_entry(0x21, handle_interrupt, 0x08, 0x8e);
+  //add_idt_entry(&IDT[0xD], gpf_handler, 0x08, 0x8e);
 
   //configure PIC
   outb(PIC1_CONTROL, 0x11);
@@ -54,8 +53,4 @@ void add_idt_entry(uint16_t num, unsigned long offset, uint16_t selector, uint8_
   IDT[num]._empty = 0;
 
   IDT[num].flags = flags;
-}
-
-void install_interrupt_handler(int offset, void* func) {
-  add_idt_entry(offset, func, 0x08, 0x8e);
 }

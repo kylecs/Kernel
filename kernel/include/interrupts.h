@@ -1,5 +1,17 @@
 #ifndef INTERRUPTS_H
 #define INTERRUPTS_H
-//this will need more parameters later
-void install_interrupt_handler(int offset, void* func);
+#include <stddef.h>
+#include <stdint.h>
+
+
+typedef struct {
+  int present: 1;
+  void* handler;
+} interrupt_handler_t;
+
+interrupt_handler_t HANDLERS[256];
+
+void install_interrupt_interface();
+void general_interrupt_handler(int offset);
+
 #endif

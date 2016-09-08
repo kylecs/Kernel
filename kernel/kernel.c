@@ -5,6 +5,7 @@
 #include "include/string.h"
 #include "include/gdt.h"
 #include "include/idt.h"
+#include "include/interrupts.h"
 
 struct multiboot_header{
 	uintptr_t flags;
@@ -18,6 +19,7 @@ void print_multiboot_info(multiboot_header_t* mboot){
 	printf("Flags is %s\n", mboot->flags);
 	printf("Lower memory is %sKB\n", mboot->mem_lower);
 	printf("Upper memory is %sKB\n", mboot->mem_upper);
+	bool x;
 }
 
 
@@ -66,6 +68,8 @@ void nevercalled(){
 	print("This should never be called!");
 }
 
+void keyboard_handler();
+void divzeroexception();
 
 void kmain(uintptr_t stack_top,uintptr_t stack_bottom,multiboot_header_t* mboot, uint32_t magic){
 	terminal_initialize();
@@ -75,12 +79,19 @@ void kmain(uintptr_t stack_top,uintptr_t stack_bottom,multiboot_header_t* mboot,
 	printf("Stack top: %sB\n", stack_top);
 	install_gdt();
 	install_idt();
-	print("You may now type, no backspace or shift modifiers supported.\n");
-	print("Also page scrolling doesn't seem to work atm. TODO\n:");
+	install_interrupt_interface();
+	install_interrupt_handler(33, keyboard_handler);
+	install_interrupt_handler(0, divzeroexception);
+	int x = 9 / 0;
+	printf("X is %s\n", x);
 	while(1) {}
 }
 
-void c_handle_interrupt(){
+void divzeroexception(){
+	print("You divided by 0, universe now broken.\n");
+}
+
+void keyboard_handler(){
 	uint8_t status;
 	char keycode;
 
@@ -90,15 +101,11 @@ void c_handle_interrupt(){
 	status = inb(0x64);
 	if(status & 1){
 		keycode = inb(0x60);
-		if(keycode > 0) {
+		if(kbdus[keycode] > 0) {
 			char* str[2];
 			str[1] = 0;
 			str[0] = kbdus[keycode];
 			print(&str);
 		}
 	}
-}
-
-void c_gpf_handler(){
-	print("GENERAL PROTECTION FAULT");
 }
