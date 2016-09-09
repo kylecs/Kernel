@@ -126,3 +126,8 @@ void printf(char* str, int32_t rpl){
 void print(char* str){
 	terminal_writeline(str);
 }
+
+void println(char* str){
+	print(str);
+	print("\n");
+}

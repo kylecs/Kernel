@@ -33,4 +33,5 @@ void print(char* str);
 uint8_t terminal_getX();
 uint8_t terminal_getY();
 void terminal_set_color(uint8_t forground, uint8_t background);
+void println(char* str);
 #endif

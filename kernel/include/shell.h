@@ -1,9 +1,23 @@
 #ifndef SHELL_H
 #define SHELL_H
 #include <stdint.h>
+
+typedef struct command {
+  uint8_t present;
+  char* command;
+  void* callback;
+  char* description;
+} command_t;
+
+static command_t commands[10];
+static uint8_t command_index = 0;
+
 void shell_handle_key(int32_t keycode, char ch);
 void shell_initialize();
 void shell_print_kernel();
 void shell_handle_command();
 void shell_reset_buffer();
+void register_command(char* command, void* callback, char* description);
+void help_menu();
+void pong();
 #endif

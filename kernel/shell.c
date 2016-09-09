@@ -26,6 +26,9 @@ void shell_handle_key(int32_t keycode, char ch) {
     //protect the 'kernel>' prefix
     if(terminal_getX() > 7) {
       terminal_backspace();
+      //backspace command buffer as well
+      buffer[key_index] = 0;
+      key_index--;
     }
   }
   if(keycode == ESCAPE) {
@@ -35,8 +38,36 @@ void shell_handle_key(int32_t keycode, char ch) {
   }
 }
 
+void help_menu() {
+  for(uint8_t i = 0; i < command_index; i++) {
+    print(commands[i].command);
+    print(" - ");
+    println(commands[i].description);
+  }
+}
+
+void pong() {
+  println("PONG!");
+}
+
+void TODO() {
+  println("- Move old print statements ending with NEWLINE to the" \
+    " new println function");
+  println("- Create an arraylist so dynamic memory can be used properly.");
+  println("- Add parameters to functions that can be passed to their handler" \
+  " functions");
+  println("- Create a filesystem driver, probably ext2.");
+  println("- Enable paging");
+  println("- Add a better memory allocator, including the reuse of memory");
+}
+
 void shell_initialize() {
-  print("Initializing shell...\n");
+  println("Initializing shell...");
+  memset(commands, sizeof(commands), 0);
+  register_command("help", help_menu, "Displays this menu.");
+  register_command("ping", pong, "Responds with PONG!");
+  register_command("cls", terminal_clear, "Clears the terminal.");
+  register_command("todo", TODO, "Prints the short term list of things to do.");
   shell_print_kernel();
 }
 
@@ -45,16 +76,19 @@ void shell_print_kernel() {
   print("kernel>");
   terminal_set_color(0xF, 0x0);
 }
+typedef void func(void);
 
 void shell_handle_command() {
-  char* c = "uname";
-  if(string_starts_with(buffer, c)) {
-    print("This is the hobby OS of Kyle Spencer!\n");
-  }else if (buffer[0] == '\n') {
-
-  }else {
-    print("That is not a recognized command!\n");
-    print("The recognized command is 'uname'\n");
+  uint8_t handled = 0;
+  for(int i = 0; i < command_index; i++){
+    if(string_starts_with(buffer, commands[i].command)){
+      ((func*)commands[i].callback)();
+      handled = 1;
+      break;
+    }
+  }
+  if(!handled) {
+    println("Command not recognized! Type 'help' for some commands.");
   }
   //do something with buffer
   shell_reset_buffer();
@@ -63,4 +97,13 @@ void shell_handle_command() {
 void shell_reset_buffer() {
   key_index = 0;
   memset(buffer, sizeof(buffer), 0);
+}
+
+void register_command(char* command, void* callback, char* description) {
+  command_t newcommand;
+  newcommand.command = command;
+  newcommand.callback = callback;
+  newcommand.description = description;
+  commands[command_index] = newcommand;
+  command_index++;
 }

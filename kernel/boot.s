@@ -33,9 +33,6 @@ a and w are both attributes, a means allocatable and w means writable
   .type kmain, @function
   _start:
     cli
-    mov eax, cr0
-    or al, 1
-    mov cr0, eax
 
     /*Grab addresses of the stack*/
     lea edx, stack_top

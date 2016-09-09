@@ -25,10 +25,11 @@ void print_multiboot_info(multiboot_header_t* mboot){
 
 void kmain(uintptr_t stack_top,uintptr_t stack_bottom,multiboot_header_t* mboot, uint32_t magic){
 	terminal_initialize();
-	printf("Magic number: %s\n", magic);
-	print_multiboot_info(mboot);
-	printf("Stack bottom: %sB\n", stack_bottom);
-	printf("Stack top: %sB\n", stack_top);
+	//printf("Magic number: %s\n", magic);
+	//printf("Stack bottom: %sB\n", stack_bottom);
+	//printf("Stack top: %sB\n", stack_top);
+	//print_multiboot_info(mboot);
+	println("Beginning boot sequence;");
 	install_gdt();
 	install_idt();
 	install_interrupt_interface();
