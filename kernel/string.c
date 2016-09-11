@@ -40,6 +40,49 @@ char digit_to_char(uint8_t input){
 	}
 }
 
+uint8_t hexchar_to_decimal(char input){
+	switch(input){
+		case '0':
+			return 0;
+		case '1':
+			return 1;
+		case '2':
+			return 2;
+		case '3':
+			return 3;
+		case '4':
+			return 4;
+		case '5':
+			return 5;
+		case '6':
+			return 6;
+		case '7':
+			return 7;
+		case '8':
+			return 9;
+		case 'a':
+		case 'A':
+			return 10;
+		case 'b':
+		case 'B':
+			return 11;
+		case 'c':
+		case 'C':
+			return 12;
+		case 'd':
+		case 'D':
+			return 13;
+		case 'e':
+		case 'E':
+			return 14;
+		case 'f':
+		case 'F':
+			return 15;
+
+
+	}
+}
+
 
 char* int_to_string(int32_t input){
 	bool negative = false;
@@ -125,4 +168,61 @@ uint8_t string_starts_with(char* full, char* start) {
 		}
 	}
 	return 1;
+}
+
+char** string_split(char* str, char delim, int* arr_length) {
+	int len = strlen(str);
+	int num_delimeters = 0;
+	//first we count delimeters
+	//we won't check the last character because no string would be able to
+	//come after it
+	for(int i = 0; i < len - 2; i++){
+		if(str[i] == delim){
+			num_delimeters++;
+		}
+	}
+	char** str_array = (char**)kalloc(sizeof(char*) * (num_delimeters + 1));
+	int str_offset = 0;
+
+	int start = 0;
+	int end = 0;
+	while(end < len){
+		while(str[end] != delim && end < len){
+			end++;
+		}
+		//end should hold index of delimeter now
+		char* substr = (char*)kalloc(end - start + 1);
+		memcpy(str + start, substr, end - start);
+		start = end + 1;
+		end++;
+		str_array[str_offset] = substr;
+		str_offset++;
+	}
+
+	//return necessary data now
+	*arr_length = str_offset;
+	return str_array;
+}
+
+uint8_t strcmp(char* str1, char* str2){
+	int len1 = strlen(str1);
+	int len2 = strlen(str2);
+	if(len1 != len2){
+		return false;
+	}
+	for(int i = 0; i < len1; i++){
+		if(str1[i] != str2[i]){
+			return false;
+		}
+	}
+	return true;
+}
+
+int32_t string_index_of_char(char* str, char look){
+	for(int i = 0; i < strlen(str); i++){
+		if(str[i] == look){
+			return i;
+		}
+	}
+	return -1;
 }

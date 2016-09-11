@@ -8,7 +8,8 @@ const uint16_t HEIGHT = 25;
 //terminal global variables
 vga_entry_t* terminal = (vga_entry_t*)0xB8000;
 uint8_t color = 0;
-vga_entry_t whitespace;
+uint8_t background = 0;
+uint8_t foreground = 0;
 uint8_t x, y;
 
 //store history and future for scrolling support
@@ -18,7 +19,7 @@ uint32_t history_index = 0;
 vga_entry_t* future;
 uint32_t future_index = 0;
 
-uint8_t terminal_make_color(uint8_t foreground, uint8_t background){
+uint8_t terminal_make_color(uint8_t background, uint8_t foreground){
 	return foreground | background << 4;
 }
 
@@ -29,8 +30,18 @@ vga_entry_t terminal_make_vga_entry(char c){
 	return ret;
 }
 
-void terminal_set_color(uint8_t foreground, uint8_t background) {
-	color = terminal_make_color(foreground, background);
+void terminal_set_color(uint8_t bg, uint8_t fg) {
+	background = bg;
+	foreground = fg;
+	color = terminal_make_color(bg, fg);
+}
+
+uint8_t terminal_get_background(){
+	return background;
+}
+
+uint8_t terminal_get_foreground(){
+	return foreground;
 }
 
 void terminal_write_char_at(uint16_t x, uint16_t y, vga_entry_t entry){
@@ -55,7 +66,7 @@ uint8_t terminal_getY() {
 void terminal_backspace(){
 	terminal_reset_scroll();
 	if(x > 0) x--;
-	terminal_write_char_at(x, y, whitespace);
+	terminal_write_char_at(x, y, terminal_make_vga_entry(' '));
 	terminal_set_cursor_position(x, y);
 }
 
@@ -81,7 +92,7 @@ void terminal_write_next_entry(vga_entry_t entry){
 
 void terminal_clear(){
 	terminal_write_next_char('\n');
-	for(int i = 0; i < 24 * 80; i++){
+	for(int i = 0; i < 25 * 80; i++){
 		terminal_write_next_char(' ');
 	}
 	x = 0;
@@ -93,7 +104,7 @@ void terminal_hard_clear(){
 	future_index = 0;
 	history_index = 0;
 	for(uint16_t n = 0; n < WIDTH * HEIGHT; n++){
-		terminal[n] = whitespace;
+		terminal[n] = terminal_make_vga_entry(' ');
 	}
 	x = 0, y = 0;
 	terminal_set_cursor_position(x, y);
@@ -102,8 +113,7 @@ void terminal_hard_clear(){
 void terminal_initialize(){
 	x = 0;
 	y = 0;
-	color = terminal_make_color(15, 0);
-	whitespace = terminal_make_vga_entry(' ');
+	color = terminal_make_color(0, 15);
 	terminal_hard_clear();
 	print("Initializing terminal...\n");
 	history = (vga_entry_t*)kalloc(8000);
@@ -155,7 +165,7 @@ void terminal_scroll(){
 	//fill bottom row with whitespace if future doesn't contain enough data
 	if(future_index < 80) {
 		for(uint16_t i = 80*24; i < 80*25; i++){
-			terminal[i] = whitespace;
+			terminal[i] = terminal_make_vga_entry(' ');
 		}
 		y--;
 		x = 0;
@@ -220,12 +230,22 @@ void println(char* str){
 	print("\n");
 }
 
+uint8_t terminal_get_color(){
+	return color;
+}
+
+void terminal_set_color_code(uint8_t newcolor){
+	color = newcolor;
+	background = (0xF0 & color) >> 4;
+	foreground = 0xF & color;
+}
+
 void terminal_linebreak(){
 	if(x > 0){
 		print("\n");
 	}
 	uint8_t prev_color = color;
-	terminal_set_color(0xC, 0x0);
+	terminal_set_color(background, 0xC);
 	for(uint8_t i = 0; i < 80; i++) {
 		print("-");
 	}

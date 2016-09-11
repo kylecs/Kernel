@@ -21,4 +21,8 @@ char* int_to_string(int32_t input);
 char* substring(char* str, uint16_t start, uint16_t end);
 char* concat(char* str1, char* str2);
 uint8_t string_starts_with(char* full, char* start);
+char** string_split(char* str, char delim, int* arr_length);
+uint8_t strcmp(char* str1, char* str2);
+int32_t string_index_of_char(char* str, char look);
+uint8_t hexchar_to_decimal(char input);
 #endif

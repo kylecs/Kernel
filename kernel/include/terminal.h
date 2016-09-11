@@ -37,4 +37,9 @@ void linebreak();
 void terminal_up();
 void terminal_replay_future();
 void terminal_reset_scroll();
+uint8_t terminal_get_color();
+void terminal_set_color_code(uint8_t newcolor);
+
+uint8_t terminal_get_background();
+uint8_t terminal_get_foreground();
 #endif

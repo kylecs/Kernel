@@ -62,6 +62,18 @@ void pong() {
   println("PONG!");
 }
 
+void cls() {
+  terminal_clear();
+}
+
+void echo(char* args) {
+  if(!args){
+    println("");
+    return;
+  }
+  println(args);
+}
+
 void TODO() {
   println("- Move old print statements ending with NEWLINE to the" \
     " new println function");
@@ -73,29 +85,69 @@ void TODO() {
   println("- Add a better memory allocator, including the reuse of memory");
 }
 
+void linebreak() {
+  terminal_linebreak();
+}
+
+void command_color(char* args){
+  int len = strlen(args);
+  if(len != 2 || !args) {
+    println("Incorrect use of color, provide 2 characters only.");
+    println("ex: color FF");
+    println("The first color is background.");
+    println("The second color is foreground.");
+    return;
+  }
+
+  terminal_set_color(hexchar_to_decimal(args[0]), hexchar_to_decimal(args[1]));
+}
+
 void shell_initialize() {
   println("Initializing shell...");
   memset(commands, sizeof(commands), 0);
   register_command("help", help_menu, "Displays this menu.");
   register_command("ping", pong, "Responds with PONG!");
-  register_command("cls", terminal_clear, "Clears the terminal.");
+  register_command("cls", cls, "Clears the terminal.");
   register_command("todo", TODO, "Prints the short term list of things to do.");
+  register_command("echo", echo, "Print given string.");
+  register_command("break", linebreak, "Print a red separating line.");
+  register_command("color", command_color, "Set the terminal colors.");
   terminal_linebreak();
   shell_print_kernel();
 }
 
 void shell_print_kernel() {
-  terminal_set_color(0xC, 0x0);
+  uint8_t color = terminal_get_color();
+  terminal_set_color(terminal_get_background(), 0xC);
   print("kernel>");
-  terminal_set_color(0xF, 0x0);
+  terminal_set_color_code(color);
 }
-typedef void func(void);
+typedef void func(char* parameters);
+
 
 void shell_handle_command() {
+  char* cmd_buf = (char*)kalloc(key_index - 1);
+  memcpy(buffer, cmd_buf, key_index - 1);
+  int len = strlen(cmd_buf);
+  shell_reset_buffer();
+
+  int space_index = string_index_of_char(cmd_buf, ' ');
+  char* command;
+  char* parameters;
+
+  if(space_index >= 0){
+    command = substring(cmd_buf, 0, space_index);
+    parameters = substring(cmd_buf, space_index + 1, len);
+  }else{
+    command = cmd_buf;
+    parameters = 0;
+  }
+
+  //see if the command exists
   uint8_t handled = 0;
   for(int i = 0; i < command_index; i++){
-    if(string_starts_with(buffer, commands[i].command)){
-      ((func*)commands[i].callback)();
+    if(strcmp(command, commands[i].command)){
+      ((func*)commands[i].callback)(parameters);
       handled = 1;
       break;
     }
@@ -103,9 +155,8 @@ void shell_handle_command() {
   if(!handled) {
     println("Command not recognized! Type 'help' for some commands.");
   }
-  //do something with buffer
-  shell_reset_buffer();
 }
+
 
 void shell_reset_buffer() {
   key_index = 0;
