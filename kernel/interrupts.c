@@ -5,6 +5,8 @@
 
 typedef void func(void);
 
+interrupt_handler_t HANDLERS[256];
+
 //I am not proud of this, but it works for now
 #define INSTALL_HANDLER(x) extern void INTERRUPT_##x(); \
   add_idt_entry(x, INTERRUPT_##x, 0x08, 0x8e);

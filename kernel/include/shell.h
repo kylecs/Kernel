@@ -9,9 +9,6 @@ typedef struct command {
   char* description;
 } command_t;
 
-static command_t commands[10];
-static uint8_t command_index = 0;
-
 void shell_handle_key(int32_t keycode, char ch);
 void shell_initialize();
 void shell_print_kernel();

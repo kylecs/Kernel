@@ -7,6 +7,9 @@
 char buffer[200];
 uint16_t key_index = 0;
 
+command_t commands[10];
+uint8_t command_index = 0;
+
 
 void shell_handle_key(int32_t keycode, char ch) {
   //write to terminal if it has a character
@@ -68,6 +71,7 @@ void shell_initialize() {
   register_command("ping", pong, "Responds with PONG!");
   register_command("cls", terminal_clear, "Clears the terminal.");
   register_command("todo", TODO, "Prints the short term list of things to do.");
+  terminal_linebreak();
   shell_print_kernel();
 }
 
