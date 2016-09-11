@@ -8,10 +8,12 @@
 #define SHIFT_RELEASE -86
 #define CAPSLOCK 58
 #define BACKSPACE 14
+#define PAGEUP 73
+#define PAGEDOWN 81
 
 static unsigned char keymap_lower[128] =
 {
-    0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
+    0,  0, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
   '9', '0', '-', '=', 0,	/* Backspace */
   '\t',			/* Tab */
   'q', 'w', 'e', 'r',	/* 19 */
@@ -50,7 +52,7 @@ static unsigned char keymap_lower[128] =
 };
 static unsigned char keymap_upper[128] =
 {
-    0,  27, '!', '@', '#', '$', '%', '^', '&', '*',	/* 9 */
+    0,  0, '!', '@', '#', '$', '%', '^', '&', '*',	/* 9 */
   '(', ')', '_', '+', 0,	/* Backspace */
   '\t',			/* Tab */
   'Q', 'W', 'E', 'R',	/* 19 */

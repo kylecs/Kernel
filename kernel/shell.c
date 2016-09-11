@@ -10,10 +10,9 @@ uint16_t key_index = 0;
 command_t commands[10];
 uint8_t command_index = 0;
 
-
 void shell_handle_key(int32_t keycode, char ch) {
   //write to terminal if it has a character
-  if(keycode > 0 && ch > 2) {
+  if(keycode > 0 && ch > 2 && key_index + 1 < 200) {
     terminal_write_next_char(ch);
     buffer[key_index] = ch;
     key_index++;
@@ -24,6 +23,7 @@ void shell_handle_key(int32_t keycode, char ch) {
     shell_handle_command();
     shell_print_kernel();
   }
+
   //handle some special characters
   if(keycode == BACKSPACE) {
     //protect the 'kernel>' prefix
@@ -34,10 +34,19 @@ void shell_handle_key(int32_t keycode, char ch) {
       key_index--;
     }
   }
+
   if(keycode == ESCAPE) {
     terminal_clear();
     shell_print_kernel();
     shell_reset_buffer();
+  }
+
+  if(keycode == PAGEUP) {
+    terminal_up();
+  }
+
+  if(keycode == PAGEDOWN) {
+    terminal_replay_future();
   }
 }
 

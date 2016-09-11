@@ -17,6 +17,7 @@ typedef struct{
 //function definitions
 void terminal_writeline(char* c);
 void terminal_clear();
+void terminal_hard_clear();
 void terminal_scroll();
 void terminal_initialize();
 void terminal_backspace();
@@ -33,4 +34,7 @@ uint8_t terminal_getY();
 void terminal_set_color(uint8_t forground, uint8_t background);
 void println(char* str);
 void linebreak();
+void terminal_up();
+void terminal_replay_future();
+void terminal_reset_scroll();
 #endif

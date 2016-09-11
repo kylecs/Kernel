@@ -4,6 +4,8 @@
 #include "include/interrupts.h"
 #include "include/shell.h"
 
+//#define KEYBOARD_PRINTCODE
+
 uint8_t shift = 0;
 uint8_t caps = 0;
 
@@ -17,6 +19,9 @@ void keyboard_interrupt_handler() {
 	if(status & 1){
 		keycode = inb(0x60);
     handle_key(keycode);
+    #ifdef KEYBOARD_PRINTCODE
+    printf("%s\n", keycode);
+    #endif
 	}
 }
 

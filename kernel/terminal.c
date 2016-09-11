@@ -13,11 +13,9 @@ uint8_t x, y;
 
 //store history and future for scrolling support
 vga_entry_t* history;
-uint32_t history_size = 0;
 uint32_t history_index = 0;
 
 vga_entry_t* future;
-uint32_t future_size = 0;
 uint32_t future_index = 0;
 
 uint8_t terminal_make_color(uint8_t foreground, uint8_t background){
@@ -36,8 +34,6 @@ void terminal_set_color(uint8_t foreground, uint8_t background) {
 }
 
 void terminal_write_char_at(uint16_t x, uint16_t y, vga_entry_t entry){
-	//if(x == WIDTH ) return;
-	//if(y == HEIGHT) return;
 	terminal[y * WIDTH + x] = entry;
 }
 void terminal_set_cursor_position(uint8_t x, uint8_t y){
@@ -46,8 +42,6 @@ void terminal_set_cursor_position(uint8_t x, uint8_t y){
 	outb(TERMINAL_DATA_PORT, (pos >> 8) & 0x00FF);
 	outb(TERMINAL_COMMAND_PORT, 15);
 	outb(TERMINAL_DATA_PORT, pos & 0x00FF);
-
-
 }
 
 uint8_t terminal_getX() {
@@ -59,6 +53,7 @@ uint8_t terminal_getY() {
 }
 
 void terminal_backspace(){
+	terminal_reset_scroll();
 	if(x > 0) x--;
 	terminal_write_char_at(x, y, whitespace);
 	terminal_set_cursor_position(x, y);
@@ -83,43 +78,123 @@ void terminal_write_next_entry(vga_entry_t entry){
 	terminal_set_cursor_position(x, y);
 
 }
+
 void terminal_clear(){
+	terminal_write_next_char('\n');
+	for(int i = 0; i < 24 * 80; i++){
+		terminal_write_next_char(' ');
+	}
+	x = 0;
+	y = 0;
+	terminal_set_cursor_position(x, y);
+}
+
+void terminal_hard_clear(){
+	future_index = 0;
+	history_index = 0;
 	for(uint16_t n = 0; n < WIDTH * HEIGHT; n++){
 		terminal[n] = whitespace;
 	}
 	x = 0, y = 0;
 	terminal_set_cursor_position(x, y);
 }
+
 void terminal_initialize(){
 	x = 0;
 	y = 0;
 	color = terminal_make_color(15, 0);
 	whitespace = terminal_make_vga_entry(' ');
-	terminal_clear();
+	terminal_hard_clear();
 	print("Initializing terminal...\n");
-	//history = (vga_entry_t*)kalloc(16000);
+	history = (vga_entry_t*)kalloc(8000);
+	future = (vga_entry_t*)kalloc(8000);
 }
 void terminal_write_next_char(char c){
+	terminal_reset_scroll();
 	terminal_write_next_entry(terminal_make_vga_entry(c));
 }
 
 void terminal_writeline(char* string){
+	terminal_reset_scroll();
 	uint16_t length = strlen(string);
 	for(uint16_t i = 0; i < length; i++){
 		terminal_write_next_entry(terminal_make_vga_entry(string[i]));
 	}
 }
+
+void terminal_reset_scroll() {
+	while(future_index >= 80) {
+		terminal_scroll();
+	}
+}
+
+//only scrolls if there is some future to move into the current row
+void terminal_replay_future(){
+	if(future_index >= 80) {
+		terminal_scroll();
+	}
+
+}
+
 void terminal_scroll(){
-	for(uint16_t i = 0; i < 80*24; i++){
+	//don't allow scroll if the buffer can't hold any more data
+	if(history_index + 80 >= 8000){
+		return;
+	}
+
+	for(int i = 0; i < 80; i++){
 		history[history_index] = terminal[i];
+		history_index++;
 		terminal[i] = terminal[i + 80];
 	}
-	for(uint16_t i = 80*24; i < 80*25; i++){
-		terminal[i] = whitespace;
+
+	for(uint16_t i = 80; i < 80*24; i++){
+		terminal[i] = terminal[i + 80];
 	}
-	y--;
-	x = 0;
+
+	//fill bottom row with whitespace if future doesn't contain enough data
+	if(future_index < 80) {
+		for(uint16_t i = 80*24; i < 80*25; i++){
+			terminal[i] = whitespace;
+		}
+		y--;
+		x = 0;
+	}else {
+		for(uint16_t i = 80*25 - 1; i >= 80*24; i--){
+			future_index--;
+			terminal[i] = future[future_index];
+		}
+	}
+	if(future_index < 80) {
+		terminal_set_cursor_position(x, y);
+	}
 }
+
+void terminal_up() {
+	if(history_index < 80) {
+		//no rows have been scrolled away
+		return;
+	}
+
+	//place bottom row into future
+	for(int i = 80*24; i < 80 * 25; i++) {
+		future[future_index] = terminal[i];
+		future_index++;
+	}
+
+	//move all middle rows, which are just shifted in the array
+	for(int i = 80 * 25 - 1; i >= 80; i--) {
+		terminal[i] = terminal[i - 80];
+	}
+
+	//insert first row from history
+	for(int i = 80 - 1; i >= 0; i--) {
+		history_index--;
+		terminal[i] = history[history_index];
+	}
+	terminal_set_cursor_position(0xFF, 0xFF);
+}
+
 void printf(char* str, int32_t rpl){
 	uint16_t size = strlen(str);
 	for(uint16_t i = 0; i < size - 1; i++){
