@@ -13,30 +13,43 @@ uint16_t strlen(char* c){
 
 char digit_to_char(uint8_t input){
 	if(input > 9){
-		return 'E';
+		return '.';
 	}
-	if(input == 0){
-		return ZERO;
-	}else if(input == 1){
-		return ONE;
-	}else if(input == 2){
-		return TWO;
-	}else if(input == 3){
-		return THREE;
-	}else if(input == 4){
-		return FOUR;
-	}else if(input == 5){
-		return FIVE;
-	}else if(input == 6){
-		return SIX;
-	}else if(input == 7){
-		return SEVEN;
-	}else if(input == 8){
-		return EIGHT;
-	}else if(input == 9){
-		return NINE;
-	}else{
-		return 'E';
+	switch(input){
+		case 0:
+			return '0';
+		case 1:
+			return '1';
+		case 2:
+			return '2';
+		case 3:
+			return '3';
+		case 4:
+			return '4';
+		case 5:
+			return '5';
+		case 6:
+			return '6';
+		case 7:
+			return '7';
+		case 8:
+			return '8';
+		case 9:
+			return '9';
+		case 10:
+			return 'A';
+		case 11:
+			return 'B';
+		case 12:
+			return 'C';
+		case 13:
+			return 'D';
+		case 14:
+			return 'E';
+		case 15:
+			return 'F';
+		default:
+			return '.';
 	}
 }
 
@@ -78,60 +91,89 @@ uint8_t hexchar_to_decimal(char input){
 		case 'f':
 		case 'F':
 			return 15;
-
-
+		default:
+			return 0;
 	}
 }
 
-
+//common aliases for number_to_string_template
 char* int_to_string(int32_t input){
-	bool negative = false;
-	if(input < 0) {
-		negative = true;
-		input *= -1;
+	return number_to_string_template(input, 10, 1, "");
+}
+
+char* uint_to_string(uint32_t input){
+	return number_to_string_template(input, 10, 0, "");
+}
+
+char* int_to_hexstring(int32_t input){
+	return number_to_string_template(input, 16, 1, "0x");
+}
+
+char* uint_to_hexstring(uint32_t input){
+	return number_to_string_template(input, 16, 0, "0x");
+}
+
+char* int_to_binstring(int32_t input){
+	return number_to_string_template(input, 2, 1, "0b");
+}
+
+char* uint_to_binstring(uint32_t input){
+	return number_to_string_template(input, 2, 0, "0b");
+}
+
+char* number_to_string_template(uint32_t input, uint8_t base, uint8_t sign_bit,
+		char* prefix)
+{
+	uint8_t prefix_len = strlen(prefix);
+	uint8_t negative = sign_bit && ((int32_t)input < 0);
+
+	//ignore the sign bit and invert all bits
+	if(sign_bit){
+		if((int32_t)input < 0){
+			input = ~input;
+			input += 1;
+		}
+		input &= 0x7FFFFFFF;
+
 	}
 
-	if(input == 0) {
-		char* ret = kalloc(sizeof(char));
-		(*ret) = '0';
-		return ret;
-	}
-
-	uint16_t n = 1;
+	uint8_t num_len = 1;
 	uint32_t temp = input;
-	while((temp /= 10) >=1){
-		n++;
+	while((temp /= base) > 0){
+		num_len++;
 	}
-	uint16_t size = n;
-	if(negative) {
-		size++;
-	}
-	char* ret = (char*) kalloc(size);
 
-	if(input < 10){
-		ret[0] = digit_to_char(input);
-		return ret;
+	uint8_t full_length = num_len + prefix_len;
+	if(negative){
+		full_length++;
 	}
+
+	char* str = (char*)kalloc(full_length + 1);
+	str[full_length] = 0;
+
 	uint32_t targetmod = 1;
-	for(uint16_t i = 0; i < (n - 1); i++){
-		targetmod *= 10;
+	for(uint16_t i = 0; i < (num_len - 1); i++){
+		targetmod *= base;
 	}
 
-	uint16_t start = negative ? 1 : 0;
-
-	if(negative) {
-		ret[0] = '-';
-	}
-
-	for(uint16_t i = start; i < n + start; i++){
-		ret[i] = digit_to_char((input - (input % targetmod) )/ targetmod);
-
+	uint16_t start = (negative ? 1 : 0) + prefix_len;
+	for(uint8_t i = start; i < num_len + start; i++){
+		str[i] = digit_to_char((input - (input % targetmod)) / targetmod);
 		input = input % targetmod;
-		targetmod /= 10;
+		targetmod /= base;
 	}
 
-	return ret;
-	//return digit_to_char(n + 1);
+	uint8_t prefix_start = 0;
+	if(negative){
+		str[0] = '-';
+		prefix_start = 1;
+	}
+
+	for(uint8_t i = prefix_start; i < prefix_len + prefix_start; i++){
+		str[i] = prefix[i - prefix_start];
+	}
+
+	return str;
 }
 
 char* substring(char* str, uint16_t start, uint16_t end){

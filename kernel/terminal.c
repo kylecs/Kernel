@@ -82,6 +82,17 @@ void terminal_write_next_entry(vga_entry_t entry){
 	if(entry.character == '\n'){
 		x = 0;
 		y++;
+	}else if(entry.character == '\t'){
+		while(x % 7 != 0){
+			x++;
+			if(x >= 80){
+				x = 0;
+				y++;
+				if(y > 25){
+					terminal_scroll();
+				}
+			}
+		}
 	}else{
 		terminal_write_char_at(x, y, entry);
 		x++;
@@ -116,8 +127,8 @@ void terminal_initialize(){
 	color = terminal_make_color(0, 15);
 	terminal_hard_clear();
 	print("Initializing terminal...\n");
-	history = (vga_entry_t*)kalloc(8000);
-	future = (vga_entry_t*)kalloc(8000);
+	history = (vga_entry_t*)kalloc(32000);
+	future = (vga_entry_t*)kalloc(32000);
 }
 void terminal_write_next_char(char c){
 	terminal_reset_scroll();
@@ -206,20 +217,25 @@ void terminal_up() {
 }
 
 void printf(char* str, int32_t rpl){
+	printsf(str, int_to_string(rpl));
+}
+
+void uprintf(char* str, uint32_t rpl){
+	printsf(str, uint_to_string(rpl));
+}
+
+void printsf(char* str, char* repl){
 	uint16_t size = strlen(str);
 	for(uint16_t i = 0; i < size - 1; i++){
-		if(str[i] == '%' && str[i + 1] == 's'){
-			char* str1 = substring(str,0, i);
-			char* str2 = int_to_string(rpl);
-
-			char* str3 = substring(str, i + 2, size);
-			char* p1 = concat(str1, str2);
-			char* p2 = concat(p1, str3);
-			print(p2);
+		if(str[i] == '%' && str[i+1] == 's'){
+			char* str1 = substring(str, 0, i);
+			char* str2 = substring(str, i+2, size);
+			print(str1);
+			print(repl);
+			print(str2);
 			return;
 		}
 	}
-	print(str);
 }
 void print(char* str){
 	terminal_writeline(str);

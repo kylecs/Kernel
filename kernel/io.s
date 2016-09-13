@@ -50,6 +50,44 @@
     in al, dx
     pop ebp
     ret
+
+  .global outw
+  outw:
+    push ebp
+    mov ebp, esp
+    mov dx, [ebp+8]
+    mov ax, [ebp+12]
+    out dx, ax
+    pop ebp
+    ret
+
+  .global inw
+  inw:
+    push ebp
+    mov ebp, esp
+    mov dx, [ebp+8]
+    in ax, dx
+    pop ebp
+    ret
+
+  .global outdw
+  outdw:
+    push ebp
+    mov ebp, esp
+    mov dx, [ebp+8]
+    mov eax, [ebp+12]
+    out dx, eax
+    pop ebp
+    ret
+
+  .global indw
+  indw:
+    push ebp
+    mov ebp, esp
+    mov dx, [ebp+8]
+    in eax, dx
+    pop ebp
+    ret
   /*
   calls lgdt
   */

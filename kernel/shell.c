@@ -50,7 +50,7 @@ void shell_handle_key(int32_t keycode, char ch) {
   }
 }
 
-void help_menu() {
+void help_menu(char* args) {
   for(uint8_t i = 0; i < command_index; i++) {
     print(commands[i].command);
     print(" - ");
@@ -58,11 +58,11 @@ void help_menu() {
   }
 }
 
-void pong() {
+void pong(char* args) {
   println("PONG!");
 }
 
-void cls() {
+void cls(char* args) {
   terminal_clear();
 }
 
@@ -74,7 +74,7 @@ void echo(char* args) {
   println(args);
 }
 
-void TODO() {
+void TODO(char* args) {
   println("- Move old print statements ending with NEWLINE to the" \
     " new println function");
   println("- Create an arraylist so dynamic memory can be used properly.");
@@ -85,7 +85,7 @@ void TODO() {
   println("- Add a better memory allocator, including the reuse of memory");
 }
 
-void linebreak() {
+void linebreak(char* args) {
   terminal_linebreak();
 }
 
@@ -96,10 +96,20 @@ void command_color(char* args){
     println("ex: color FF");
     println("The first color is background.");
     println("The second color is foreground.");
+    println("0 - black        9  - light blue");
+    println("1 - blue         A - light green");
+    println("2 - green        B - light cyan");
+    println("3 - cyan         C - light red");
+    println("4 - red          D - light magenta");
+    println("5 - magenta      E - yellow");
+    println("6 - brown        F - white");
+    println("7 - light gray");
+    println("8 - dark gray");
     return;
   }
 
   terminal_set_color(hexchar_to_decimal(args[0]), hexchar_to_decimal(args[1]));
+  terminal_clear();
 }
 
 void shell_initialize() {
