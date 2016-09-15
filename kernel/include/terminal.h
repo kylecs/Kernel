@@ -9,6 +9,9 @@
 #define TERMINAL_COMMAND_PORT 0x3D4
 #define TERMINAL_DATA_PORT 0x3D5
 
+#define VGA_CONTROL 0x3C0
+#define VGA_CONTROL_READ 0x3C1
+
 typedef struct{
 	char character;
 	uint8_t color;

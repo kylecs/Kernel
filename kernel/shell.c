@@ -76,13 +76,8 @@ void echo(char* args) {
 }
 
 void TODO(char* args) {
-  println("- Move old print statements ending with NEWLINE to the" \
-    " new println function");
-  println("- Create an arraylist so dynamic memory can be used properly.");
-  println("- Add parameters to functions that can be passed to their handler" \
-  " functions");
+  println("- Figure out how to interface with the IDE controller");
   println("- Create a filesystem driver, probably ext2.");
-  println("- Enable paging");
   println("- Add a better memory allocator, including the reuse of memory");
 }
 

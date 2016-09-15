@@ -122,6 +122,16 @@ void terminal_hard_clear(){
 }
 
 void terminal_initialize(){
+	//configure vga to use last bit of vga_entry as color and not a blink bit
+	inb(0x3DA); //reset VGA_CONTROL to access an index next
+	uint8_t state = inb(VGA_CONTROL);
+	outb(VGA_CONTROL, 0x10);
+	uint8_t attr = inb(VGA_CONTROL_READ);
+	attr &= 0xF7;
+	outb(VGA_CONTROL, attr);
+	outb(VGA_CONTROL, state);
+	inb(0x3DA);
+
 	x = 0;
 	y = 0;
 	color = terminal_make_color(0, 15);
