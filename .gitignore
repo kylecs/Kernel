@@ -5,3 +5,4 @@ bochsout.log
 bootable.iso
 TODO
 test_disk.img
+movetohd.sh
