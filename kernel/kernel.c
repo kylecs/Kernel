@@ -14,21 +14,44 @@
 uint32_t query_pci(uint8_t bus, uint8_t device, uint8_t function, uint8_t reg) {
 	uint32_t address = (1 << 31) | (bus << 16) | ((device & 0x1f) << 11) |
 		((function & 0x7) << 8) | ((reg & 0x3F) << 2);
-	uprintf("Checking PCI address: %s\n", address);
 	outdw(0xCF8, address);
 	uint32_t got = indw(0xCFC);
 	return got;
 }
 
-void scan_pci() {
-	//TODO
-	/*
-	uint16_t vendor_id = (got & 0xFFFF);
-	uint16_t device_id = (got >> 16) & 0xFFFF;
-	println("");
-	uprintf("Got PCI response: %s\n", got);
-	uprintf("Vendor ID: %s\n", vendor_id);
-	uprintf("Device ID: %s\n", device_id);*/
+void scan_pci(char* args) {
+	uint8_t bus = 0;
+	uint8_t device = 0;
+	uint8_t continue_scan = 1;
+	while(continue_scan){
+		uint32_t result = query_pci(bus, device, 0, 0);
+		if(result == 0xFFFFFFFF){
+			if(device == 0){
+				//out of devices
+				continue_scan = 0;
+			}else{
+				//reached end of bus
+				device = 0;
+				bus++;
+			}
+		}else{
+			uprintf("BUS: %s, ", bus);
+			uprintf("DEVICE: %s\n", device);
+			uint16_t vendor_id = result & 0xFFFF;
+			uint16_t device_id = (result >> 16) & 0xFFFF;
+			printsf("VENDORID: %s ", uint_to_hexstring(vendor_id));
+			printsf("DEVICEID: %s\n", uint_to_hexstring(device_id));
+			uint32_t reg_data = query_pci(bus, device, 0, 0x08);
+			uint8_t class = (reg_data >> 24) & 0xFF;
+			uint8_t subclass = (reg_data >> 16) & 0xFF;
+			printsf("register 0x08: %s, ", uint_to_binstring(reg_data));
+			printsf("CLASS: %s, ", uint_to_hexstring(class));
+			printsf("SUBCLASS: %s", uint_to_hexstring(subclass));
+			print("\n\n");
+			device++;
+		}
+	}
+	println("End PCI Scan");
 }
 
 void kmain(uintptr_t stack_top, uintptr_t stack_bottom,
@@ -57,7 +80,6 @@ void kmain(uintptr_t stack_top, uintptr_t stack_bottom,
 	install_interrupt_interface();
 	install_keyboard();
 	shell_initialize();
-	println("");
-	printsf("The value of 112 in hex is %s\n", int_to_hexstring(112));
+	register_command("pci_scan", scan_pci, "Scan PCI for devices.");
 	while(1) {}
 }

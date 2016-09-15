@@ -17,6 +17,7 @@ void memset(void* dst, uint32_t size, uint8_t fill){
 uint8_t* ptr = (uint8_t*) 3145728;
 void* kalloc(size_t size){
 	void* ret = (void*) ptr;
-	ptr += size + 1;
+	ptr += size;
+	ptr+= 2;
 	return ret;
 }

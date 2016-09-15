@@ -12,9 +12,6 @@ uint16_t strlen(char* c){
 
 
 char digit_to_char(uint8_t input){
-	if(input > 9){
-		return '.';
-	}
 	switch(input){
 		case 0:
 			return '0';
@@ -178,8 +175,8 @@ char* number_to_string_template(uint32_t input, uint8_t base, uint8_t sign_bit,
 
 char* substring(char* str, uint16_t start, uint16_t end){
 
-	char* ret = (char* )kalloc(end - start + 1);
-
+	char* ret = (char* )kalloc((sizeof(char)) * (end - start + 1));
+	ret[end-start] = 0;
 
 	for(uint16_t i = 0; i < (end - start); i++){
 		ret[i] = str[i + start];
@@ -190,7 +187,8 @@ char* substring(char* str, uint16_t start, uint16_t end){
 char* concat(char* str1, char* str2){
 	uint16_t size1 = strlen(str1);
 	uint16_t size2 = strlen(str2);
-	char* ret = (char*)kalloc(strlen(str1) + strlen(str2));
+	char* ret = (char*)kalloc((sizeof(char)) * (size1 + size2 + 1));
+	ret[size1+size2] = 0;
 	for(uint16_t i = 0; i < size1; i++){
 		ret[i] = str1[i];
 	}
@@ -233,7 +231,7 @@ char** string_split(char* str, char delim, int* arr_length) {
 			end++;
 		}
 		//end should hold index of delimeter now
-		char* substr = (char*)kalloc(end - start + 1);
+		char* substr = (char*)kalloc((sizeof(char)) * (end - start + 1));
 		memcpy(str + start, substr, end - start);
 		start = end + 1;
 		end++;

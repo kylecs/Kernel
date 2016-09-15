@@ -127,8 +127,8 @@ void terminal_initialize(){
 	color = terminal_make_color(0, 15);
 	terminal_hard_clear();
 	print("Initializing terminal...\n");
-	history = (vga_entry_t*)kalloc(32000);
-	future = (vga_entry_t*)kalloc(32000);
+	history = (vga_entry_t*)kalloc(sizeof(char) * 32000);
+	future = (vga_entry_t*)kalloc(sizeof(char) * 32000);
 }
 void terminal_write_next_char(char c){
 	terminal_reset_scroll();
@@ -159,7 +159,7 @@ void terminal_replay_future(){
 
 void terminal_scroll(){
 	//don't allow scroll if the buffer can't hold any more data
-	if(history_index + 80 >= 8000){
+	if(history_index + 80 >= 32000){
 		return;
 	}
 

@@ -12,7 +12,7 @@ uint8_t command_index = 0;
 
 void shell_handle_key(int32_t keycode, char ch) {
   //write to terminal if it has a character
-  if(keycode > 0 && ch > 2 && key_index + 1 < 200) {
+  if(keycode > 0 && ch > 2 && key_index + 1 < 200 && ch != '\n') {
     terminal_write_next_char(ch);
     buffer[key_index] = ch;
     key_index++;
@@ -20,6 +20,7 @@ void shell_handle_key(int32_t keycode, char ch) {
 
   //reprint kernel> on new line
   if(ch == '\n') {
+    terminal_write_next_char('\n');
     shell_handle_command();
     shell_print_kernel();
   }
@@ -136,8 +137,9 @@ typedef void func(char* parameters);
 
 
 void shell_handle_command() {
-  char* cmd_buf = (char*)kalloc(key_index - 1);
-  memcpy(buffer, cmd_buf, key_index - 1);
+  char* cmd_buf = (char*)kalloc(sizeof(char) * (key_index + 1));
+  cmd_buf[key_index] = 0;
+  memcpy(buffer, cmd_buf, key_index);
   int len = strlen(cmd_buf);
   shell_reset_buffer();
 
