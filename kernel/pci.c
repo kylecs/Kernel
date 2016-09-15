@@ -131,7 +131,7 @@ void pci_scan_bus(uint8_t bus){
 }
 
 void pci_scan(){
-	print("Scanning for PCI devices ... ");
+	print("Scanning PCI ...\t\t");
 	uint8_t continue_scan = 1;
 	uint8_t bus = 0;
 	while(continue_scan){

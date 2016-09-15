@@ -55,7 +55,7 @@ void handle_key(int32_t keycode) {
 }
 
 void install_keyboard() {
-  print("Installing keyboard ... ");
+  print("Installing keyboard ...\t");
   install_interrupt_handler(33, keyboard_interrupt_handler);
   print("done\n");
 }

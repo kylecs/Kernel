@@ -69,8 +69,6 @@ void terminal_backspace(){
 	terminal_write_char_at(x, y, terminal_make_vga_entry(' '));
 	terminal_set_cursor_position(x, y);
 }
-
-
 void terminal_write_next_entry(vga_entry_t entry){
 	if(x == WIDTH){
 		x = 0;
@@ -83,6 +81,7 @@ void terminal_write_next_entry(vga_entry_t entry){
 		x = 0;
 		y++;
 	}else if(entry.character == '\t'){
+		terminal_write_next_char(' ');
 		while(x % 7 != 0){
 			x++;
 			if(x >= 80){

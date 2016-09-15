@@ -16,22 +16,19 @@ void kmain(uintptr_t stack_top, uintptr_t stack_bottom,
 	terminal_initialize();
 	terminal_linebreak();
 	//print some non-multiboot table things
-	printf("Magic number: %s\n", magic);
-	printf("Stack bottom: %sB\n", stack_bottom);
-	printf("Stack top: %sB\n", stack_top);
+	printf("Magic number:\t%s\n", magic);
+	printf("Stack bottom:\t%sB\n", stack_bottom);
+	printf("Stack top:\t%sB\n", stack_top);
 
 	terminal_linebreak();
 	//dive into multiboot data structure data
-	printf("Flags is %s\n", mboot->flags);
-	print("Bootloader: ");	println(mboot->boot_loader_name);
-	printf("Lower memory is %sKB\n", mboot->mem_lower);
-	printf("Upper memory is %sKB\n", mboot->mem_upper);
-	printf("Drives datastructure size: %s\n", mboot->drives_length);
-	printf("Drives datastructure address: %s\n", mboot->drives_addr);
-	printf("Module count: %s\n", mboot->mods_count);
-	printf("Modules address: %s\n", mboot->mods_addr);
+	printf("Flags:\t\t%s\n", mboot->flags);
+	print("Bootloader: \t");	println(mboot->boot_loader_name);
+	printf("Lower memory:\t%sKB\n", mboot->mem_lower);
+	printf("Upper memory:\t%sKB\n", mboot->mem_upper);
+	printf("Module count:\t%s\n", mboot->mods_count);
+	printf("Modules addr:\t%s\n", mboot->mods_addr);
 	terminal_linebreak();
-	println("Beginning boot sequence;");
 	install_gdt();
 	install_idt();
 	install_interrupt_interface();

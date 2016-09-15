@@ -109,7 +109,7 @@ void command_color(char* args){
 }
 
 void shell_initialize() {
-  println("Initializing shell...");
+  print("Initializing shell...\t");
   memset(commands, sizeof(commands), 0);
   register_command("help", help_menu, "Displays this menu.");
   register_command("ping", pong, "Responds with PONG!");
@@ -118,6 +118,7 @@ void shell_initialize() {
   register_command("echo", echo, "Print given string.");
   register_command("break", linebreak, "Print a red separating line.");
   register_command("color", command_color, "Set the terminal colors.");
+  print("done");
   terminal_linebreak();
   shell_print_kernel();
 }

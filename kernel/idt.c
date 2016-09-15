@@ -8,7 +8,7 @@ idt_gate_t IDT[NUM_IDT_GATES];
 idt_descriptor_t idt_desc;
 
 void install_idt() {
-  print("Installing IDT ... ");
+  print("Installing IDT ...\t\t");
   size_t size = sizeof(idt_gate_t) * NUM_IDT_GATES;
   idt_descriptor_t idt_desc;
   idt_desc.base = IDT;
@@ -38,10 +38,7 @@ void install_idt() {
   load_idt(idt_desc);
   print("done\n");
 
-  //enable interrupts
-  print("Enabling interrupts ... ");
   enable_interrupts();
-  print("done\n");
 }
 
 void add_idt_entry(uint16_t num, unsigned long offset, uint16_t selector, uint8_t flags) {
