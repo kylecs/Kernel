@@ -2,6 +2,7 @@
 A simple x86 kernel written in C and Assembly
 
 ##Demo
+*Click to play*
 [![Demo Video HERE](https://img.youtube.com/vi/McJ6sdyONg8/0.jpg)](https://www.youtube.com/watch?v=McJ6sdyONg8)
 
 ##Features
