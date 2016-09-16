@@ -1,4 +1,7 @@
 #include "include/gdt.h"
+#include "include/terminal.h"
+#include "include/memory.h"
+#include "include/io.h"
 
 gdt_entry_t GDT[3];
 gdt_descriptor_t gdt_desc;

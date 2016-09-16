@@ -1,8 +1,5 @@
-#ifndef IDT_H
-#define IDT_H
-
-#include "terminal.h"
-#include "io.h"
+#pragma once
+#include "types.h"
 
 #define PIC1_CONTROL 0x20
 #define PIC1_DATA 0x21
@@ -30,6 +27,3 @@ extern void load_idt(idt_descriptor_t idtr);
 
 void install_idt();
 void add_idt_entry(uint16_t num, unsigned long offset, uint16_t selector, uint8_t flags);
-
-
-#endif

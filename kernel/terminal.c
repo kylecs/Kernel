@@ -1,5 +1,7 @@
 #include "include/terminal.h"
 #include "include/memory.h";
+#include "include/io.h"
+#include "include/string.h"
 
 //some constants
 const uint16_t WIDTH = 80;

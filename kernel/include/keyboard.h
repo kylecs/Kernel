@@ -1,7 +1,5 @@
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
-#include <stddef.h>
-#include <stdint.h>
+#pragma once
+#include "types.h"
 
 #define ESCAPE 1
 #define SHIFT 42
@@ -93,4 +91,3 @@ static unsigned char keymap_upper[128] =
 void keyboard_interrupt_handler();
 void install_keyboard();
 void handle_key(int32_t keycode);
-#endif

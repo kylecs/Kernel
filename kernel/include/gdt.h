@@ -1,10 +1,5 @@
-#ifndef GDT_H
-#define GDT_H
-#include <stdint.h>
-#include <stddef.h>
-#include "terminal.h"
-#include "memory.h"
-#include "io.h"
+#pragma once
+#include "types.h"
 
 typedef struct {
   uint16_t limit_lower;
@@ -43,4 +38,3 @@ void add_gdt_entry(uint16_t offset, uint64_t base, uint64_t limit,
                     uint8_t size, uint8_t granularity, uint8_t readwrite,
                     uint8_t direction, uint8_t executable, uint8_t privlege,
                     uint8_t present);
-#endif

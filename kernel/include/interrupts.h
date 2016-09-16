@@ -1,7 +1,5 @@
-#ifndef INTERRUPTS_H
-#define INTERRUPTS_H
-#include <stddef.h>
-#include <stdint.h>
+#pragma once
+#include "types.h"
 
 
 typedef struct {
@@ -11,5 +9,3 @@ typedef struct {
 
 void install_interrupt_interface();
 void general_interrupt_handler(int offset);
-
-#endif

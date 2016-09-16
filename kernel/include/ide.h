@@ -1,3 +1,4 @@
 #pragma once
 #include "types.h"
-void install_paging();
+
+void scan_for_ide();

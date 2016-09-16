@@ -1,3 +1,4 @@
-#define false 0
-#define true 1
-#define bool uint8_t
+#pragma once
+#include <stddef.h>
+#include <stdint.h>
+#include <stdbool.h>

@@ -1,5 +1,5 @@
-#include <stdint.h>
-
+#pragma once
+#include "types.h"
 //QEMU FLAGS:
 //0000001001001111
 

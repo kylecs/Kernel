@@ -1,6 +1,5 @@
-#ifndef STRING_H
-#define STRING_H
-#include <stdint.h>
+#pragma once
+#include "types.h"
 
 uint16_t strlen(char* c);
 char digit_to_char(uint8_t input);
@@ -20,4 +19,3 @@ char* int_to_hexstring(int32_t input);
 char* uint_to_hexstring(uint32_t input);
 char* int_to_binstring(int32_t input);
 char* uint_to_binstring(uint32_t input);
-#endif

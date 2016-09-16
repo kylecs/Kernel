@@ -1,17 +1,11 @@
-#ifndef H_TERMINAL
-#define H_TERMINAL
-#include <stddef.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include "io.h"
-#include "string.h"
+#pragma once
+#include "types.h"
 
 #define TERMINAL_COMMAND_PORT 0x3D4
 #define TERMINAL_DATA_PORT 0x3D5
 
 #define VGA_CONTROL 0x3C0
 #define VGA_CONTROL_READ 0x3C1
-
 typedef struct{
 	char character;
 	uint8_t color;
@@ -47,4 +41,3 @@ void printsf(char* str, char* repl);
 
 uint8_t terminal_get_background();
 uint8_t terminal_get_foreground();
-#endif

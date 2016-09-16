@@ -1,5 +1,7 @@
 #include "include/idt.h"
 #include "include/io.h"
+#include "include/terminal.h"
+#include "include/io.h"
 
 extern void handle_interrupt(void);
 extern void gpf_handler(void);
@@ -13,10 +15,6 @@ void install_idt() {
   idt_descriptor_t idt_desc;
   idt_desc.base = IDT;
   idt_desc.limit = sizeof(IDT) - 1;
-
-  //setup 2 interrupt handlers
-  //add_idt_entry(0x21, handle_interrupt, 0x08, 0x8e);
-  //add_idt_entry(&IDT[0xD], gpf_handler, 0x08, 0x8e);
 
   //configure PIC
   outb(PIC1_CONTROL, 0x11);

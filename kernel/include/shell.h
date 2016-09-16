@@ -1,6 +1,5 @@
-#ifndef SHELL_H
-#define SHELL_H
-#include <stdint.h>
+#pragma once
+#include "types.h"
 
 typedef struct command {
   uint8_t present;
@@ -17,4 +16,3 @@ void shell_reset_buffer();
 void register_command(char* command, void* callback, char* description);
 void help_menu();
 void pong();
-#endif

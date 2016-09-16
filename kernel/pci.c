@@ -1,32 +1,28 @@
 #include "include/pci.h"
 #include "include/types.h"
 
-char* DEVICE_CLASS_LIST[] = {
-	"Unclassified device",
-	"Mass storage controller",
-	"Network controller",
-	"Display controller",
-	"Multimedia controller",
-	"Memory controller",
-	"Bridge",
-	"Communication controller",
-	"Generic system peripheral",
-	"Input device controller",
-	"Docking station",
-	"Processor",
-	"Serial bus controller",
-	"Wireless controller",
-	"Intelligent controller",
-	"Satellite communications controller",
-	"Encreption controller",
-	"Signal processing controller",
-	"Processing accelerators",
-	"Non-essential instrumentation", //offset 0x13
-};
-
 pci_device_t devices[MAX_PCI_FUNCTIONS];
 uint16_t device_counter = 0;
 bool scanned = false;
+
+pci_device_t* pci_get_devices(int* size){
+	*size = device_counter;
+	return devices;
+}
+
+void pci_device_write(pci_device_t* device, uint8_t offset, uint32_t data){
+	uint32_t address =
+		pci_make_address(device->bus, device->device, device->function, offset);
+	outdw(PCI_CONFIG, address);
+	outdw(PCI_DATA, data);
+}
+
+uint32_t pci_device_read(pci_device_t* device, uint8_t offset){
+	uint32_t address =
+		pci_make_address(device->bus, device->device, device->function, offset);
+	outdw(PCI_CONFIG, address);
+	return indw(PCI_DATA);
+}
 
 void pci_print_device(pci_device_t device){
 	uprintf("BUS: %s, ", device.bus);
