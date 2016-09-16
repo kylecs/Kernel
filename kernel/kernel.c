@@ -17,17 +17,18 @@ void kmain(uintptr_t stack_top, uintptr_t stack_bottom,
 	terminal_linebreak();
 	//print some non-multiboot table things
 	printf("Magic number:\t%s\n", magic);
-	printf("Stack bottom:\t%sB\n", stack_bottom);
-	printf("Stack top:\t%sB\n", stack_top);
+	printsf("Stack bottom:\t%s\n", uint_to_hexstring(stack_bottom));
+	printsf("Stack top:\t%s\n", uint_to_hexstring(stack_top));
+
 
 	terminal_linebreak();
 	//dive into multiboot data structure data
-	printf("Flags:\t\t%s\n", mboot->flags);
-	print("Bootloader: \t");	println(mboot->boot_loader_name);
-	printf("Lower memory:\t%sKB\n", mboot->mem_lower);
-	printf("Upper memory:\t%sKB\n", mboot->mem_upper);
-	printf("Module count:\t%s\n", mboot->mods_count);
-	printf("Modules addr:\t%s\n", mboot->mods_addr);
+	printsf("Flags:\t\t%s\n", uint_to_binstring(mboot->flags));
+	printsf("Bootloader:\t%s\n", mboot->boot_loader_name);
+	printsf("Lower memory:\t", uint_to_hexstring(mboot->mem_lower));
+	printsf("Upper memory:\t", uint_to_hexstring(mboot->mem_upper));
+	printsf("Mods count:\t%s\n", uint_to_string(mboot->mods_count));
+	printsf("Mods addr:\t%s\n", uint_to_hexstring(mboot->mods_addr));
 	terminal_linebreak();
 	install_gdt();
 	install_idt();
