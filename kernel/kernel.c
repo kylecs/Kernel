@@ -10,6 +10,7 @@
 #include "include/shell.h"
 #include "include/multiboot.h"
 #include "include/pci.h"
+#include "include/ata.h"
 
 void kmain(uintptr_t stack_top, uintptr_t stack_bottom,
 						multiboot_header_t* mboot, uint32_t magic){
@@ -34,7 +35,9 @@ void kmain(uintptr_t stack_top, uintptr_t stack_bottom,
 	install_idt();
 	install_interrupt_interface();
 	pci_scan();
+	setup_ata();
 	install_keyboard();
+
 	shell_initialize();
 	register_command("pci_scan", pci_print_all, "Scan PCI for devices.");
 	while(1) {}

@@ -33,6 +33,7 @@ void pci_print_device(pci_device_t device){
 	printsf("CLASS: %s, ", uint_to_hexstring(device.class));
 	printsf("SUBCLASS: %s, ", uint_to_hexstring(device.subclass));
 	printsf("HEADER: %s\n", uint_to_hexstring(device.header_type));
+
 	if(device.class > 0x13){
 		if(device.class == 0x40){
 			println("Coprocessor");
