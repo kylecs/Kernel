@@ -1,18 +1,18 @@
-#Kernel
+# Kernel
 A simple x86 kernel written in C and Assembly
 
-##Demo
+## Demo
 *Click to play*
 
 [![Demo Video HERE](https://img.youtube.com/vi/McJ6sdyONg8/0.jpg)](https://www.youtube.com/watch?v=McJ6sdyONg8)
 
-##Features
+## Features
   * Color Terminal with scrolling(page up and down keys)
   * Scan PCI devices and print some info about them
   * Prints multiboot data
   * Basic command(cls, echo, help, color)
 
-##Install
+## Install
   *You must have a GCC cross compiler targeting i686-elf.*
   1. Modify the make file to point $(CC) and $(AS) at your cross compiler.
   2. Run `make` to compile into an elf binary.
